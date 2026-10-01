@@ -72,6 +72,12 @@ class BaseValidator {
         return this
     }
 
+    test(validator, ...args) {
+        this.rules[validator] = {
+            isValid: () => this.customValidators[this.type][validator](...args)
+        }
+    }
+
     isValid(value) {
 
         if (value === null || value === undefined) {
@@ -98,6 +104,8 @@ class BaseValidator {
 
 class StringValidator extends BaseValidator {
 
+    type = 'string'
+
     isTypeValid(value) {
         return typeof value === 'string'
     }
@@ -122,6 +130,8 @@ class StringValidator extends BaseValidator {
 
 class NumberValidator extends BaseValidator {
 
+    type = 'number'
+
     isTypeValid(value) {
         return typeof value === 'number'
     }
@@ -144,6 +154,8 @@ class NumberValidator extends BaseValidator {
 // =======================================
 
 class ArrayValidator extends BaseValidator {
+
+    type = 'array'
 
     isTypeValid(value) {
         return Array.isArray(value)
@@ -192,6 +204,13 @@ class ObjectValidator {
 
 class Validator {
 
+    customValidators = {
+        string: {},
+        number: {},
+        array: {},
+        object: {}
+    }
+
     string() {
         return new StringValidator()
     }
@@ -210,25 +229,14 @@ class Validator {
 
     addValidator(validator, name, fn) {
 
-        const validators = {
-            string: StringValidator,
-            number: NumberValidator,
-            array: ArrayValidator,
-            object: ObjectValidator
-        }
+        const currentValidator = customValidators[validator]
 
-        const ValidatorClass = validators[validator]
-
-        if (!ValidatorClass) {
+        if (!currentValidator) {
             throw new Error(`Unknown validator: ${validator}`)
         }
 
-        ValidatorClass.prototype[name] = function (...args) {
-            this.rules[name] = {
-                isValid: value => fn(value, ...args)
-            }
-            return this
-        }
+        currentValidator[name] = (value, ...args) => fn(value, ...args)
+
     }
 
 }
