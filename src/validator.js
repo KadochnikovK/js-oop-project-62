@@ -149,8 +149,8 @@ class ArrayValidator extends BaseValidator {
         return Array.isArray(value)
     }
 
-    sizeof() {
-        this.rules.positive = new IsSizeof(parameter)
+    sizeof(size) {
+        this.rules.sizeof = new IsSizeof(size)
         return this
     }
 
