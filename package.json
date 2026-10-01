@@ -1,0 +1,51 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "Node.js boilerplate package",
+  "bin": {
+    "nodejs-package": "bin/nodejs-package.js"
+  },
+  "simple-git-hooks": {
+    "pre-push": "npx lint-staged"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "oxlint && oxfmt --check",
+    "lint:fix": "oxfmt && oxlint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KadochnikovK/js-oop-project-62.git"
+  },
+  "author": "Kirill Mokevnin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KadochnikovK/js-oop-project-62/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/KadochnikovK/js-oop-project-62/#readme",
+  "dependencies": {
+    "es-toolkit": "^1.50.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "oxfmt",
+      "oxlint --fix"
+    ]
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.0",
+    "lint-staged": "^17.3.0",
+    "npm-check-updates": "^23.0.2",
+    "oxfmt": "^0.63.0",
+    "oxlint": "^1.78.0",
+    "release-it": "^21.0.2",
+    "simple-git-hooks": "^2.13.1",
+    "vitest": "^5.0.0"
+  }
+}
