@@ -63,8 +63,9 @@ class IsSizeof {
 // =======================================
 
 class BaseValidator {
-    constructor() {
+    constructor(customValidators) {
         this.rules = {}
+        this.customValidators = customValidators
     }
 
     required() {
@@ -72,10 +73,11 @@ class BaseValidator {
         return this
     }
 
-    test(validator, ...args) {
-        this.rules[validator] = {
-            isValid: () => this.customValidators[this.type][validator](...args)
+    test(name, ...args) {
+        this.rules[name] = {
+            isValid: (value) => this.customValidators[name](value, ...args)
         }
+        return this
     }
 
     isValid(value) {
@@ -104,8 +106,6 @@ class BaseValidator {
 
 class StringValidator extends BaseValidator {
 
-    type = 'string'
-
     isTypeValid(value) {
         return typeof value === 'string'
     }
@@ -130,8 +130,6 @@ class StringValidator extends BaseValidator {
 
 class NumberValidator extends BaseValidator {
 
-    type = 'number'
-
     isTypeValid(value) {
         return typeof value === 'number'
     }
@@ -154,8 +152,6 @@ class NumberValidator extends BaseValidator {
 // =======================================
 
 class ArrayValidator extends BaseValidator {
-
-    type = 'array'
 
     isTypeValid(value) {
         return Array.isArray(value)
@@ -212,33 +208,34 @@ class Validator {
     }
 
     string() {
-        return new StringValidator()
+        return new StringValidator(this.customValidators.string)
     }
 
     number() {
-        return new NumberValidator()
+        return new NumberValidator(this.customValidators.number)
     }
 
     array() {
-        return new ArrayValidator()
+        return new ArrayValidator(this.customValidators.array)
     }
 
     object() {
-        return new ObjectValidator()
+        return new ObjectValidator(this.customValidators.object)
     }
 
     addValidator(validator, name, fn) {
 
-        const currentValidator = customValidators[validator]
+        const currentValidator = this.customValidators[validator]
 
         if (!currentValidator) {
             throw new Error(`Unknown validator: ${validator}`)
         }
 
-        currentValidator[name] = (value, ...args) => fn(value, ...args)
+        currentValidator[name] = fn
 
     }
 
 }
+
 
 export default Validator
